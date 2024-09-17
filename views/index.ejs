@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/styles.css" />
     <title>Book Notes</title>
+    <script>
+      function formatDate(dateString) {
+        const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+        const date = new Date(dateString);
+        return date.toLocaleDateString(undefined, options);
+      }
+    </script>
   </head>
   <body>
     <h1>Books I've Read</h1>
@@ -15,12 +22,20 @@
         <img
           src="<%= book.cover_url %>"
           alt="Cover of <%= book.title %>"
-          width="150"
+          class="book-cover"
         />
-        <h2><%= book.title %> by <%= book.author %></h2>
-        <p>Rating: <%= book.rating %>/10</p>
-        <p><%= book.review %></p>
-        <p>Date read: <%= book.read_date %></p>
+        <div class="book-details">
+          <h2><%= book.title %></h2>
+          <p><strong>Author:</strong> <%= book.author %></p>
+          <p><strong>Rating:</strong> <%= book.rating %>/10</p>
+          <p>
+            <strong>Date Read:</strong>
+            <script>
+              document.write(formatDate("<%= book.read_date %>"));
+            </script>
+          </p>
+          <p><%= book.review %></p>
+        </div>
       </div>
       <% }) %>
     </div>
