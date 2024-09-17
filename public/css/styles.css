@@ -5,6 +5,14 @@ body {
   background-color: #f4f4f4;
 }
 
+.add-new-book {
+  background-color: #f4f4f4;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin: 20px;
+}
+
 h1 {
   text-align: center;
   margin: 20px;
@@ -52,7 +60,7 @@ h1 {
   font-weight: bold;
 }
 
-form {
+.add {
   max-width: 600px;
   margin: 50px auto;
   padding: 20px;
@@ -107,4 +115,39 @@ form .form-group {
 
 form .btn {
   width: 100%;
+}
+
+.book-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.book-actions .btn {
+  padding: 8px 12px;
+  font-size: 14px;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.book-actions .btn-update {
+  background-color: #28a745;
+  color: white;
+}
+
+.book-actions .btn-update:hover {
+  background-color: #218838;
+}
+
+.book-actions .btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.book-actions .btn-delete:hover {
+  background-color: #c82333;
 }

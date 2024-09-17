@@ -15,7 +15,7 @@
   </head>
   <body>
     <h1>Books I've Read</h1>
-    <form action="/add" method="GET">
+    <form class="add-new-book" action="/add" method="GET">
       <button type="submit">New Book</button>
     </form>
 
@@ -38,6 +38,16 @@
             </script>
           </p>
           <p><%= book.review %></p>
+          <div class="book-actions">
+            <a href="/edit/<%= book.id %>" class="btn btn-update">Update</a>
+            <form
+              action="/delete/<%= book.id %>"
+              method="POST"
+              style="display: inline"
+            >
+              <button type="submit" class="btn btn-delete">Delete</button>
+            </form>
+          </div>
         </div>
       </div>
       <% }) %>

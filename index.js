@@ -68,6 +68,16 @@ app.post("/add", async (req, res) => {
   }
 });
 
+app.post("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    await db.query("DELETE FROM books WHERE id = $1", [id]);
+    res.redirect("/");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.listen(port, () => {
   console.log("Server Running on Port 3000");
 });
