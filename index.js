@@ -39,7 +39,6 @@ app.post("/add", async (req, res) => {
   const { title, author, rating, read_date, review } = req.body;
 
   let isbn = null;
-  let coverUrl = "/images/placeholder.jpg"; // Placeholder-ul implicit
 
   try {
     // Căutare ISBN folosind Open Library API
@@ -75,6 +74,50 @@ app.post("/delete/:id", async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.get("/edit/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await db.query("SELECT * FROM books WHERE id = $1", [id]);
+    const book = result.rows[0];
+    res.render("edit.ejs", { book: book });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/edit/:id", async (req, res) => {
+  const id = req.params.id;
+  const { title, author, rating, read_date, review } = req.body;
+  let isbn = null;
+  let coverUrl = null;
+
+  try {
+    // Căutare ISBN folosind Open Library API
+    const response = await axios.get(
+      `https://openlibrary.org/search.json?title=${title}&author=${author}`
+    );
+    if (response.data.docs && response.data.docs.length > 0) {
+      const bookData = response.data.docs[0];
+      isbn = bookData.isbn ? bookData.isbn[0] : null; // Obținem primul ISBN
+
+      // Dacă există ISBN, generăm URL-ul copertei
+      if (isbn) {
+        coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`;
+      }
+    }
+
+    // Inserăm datele în baza de date
+    await db.query(
+      "UPDATE books SET title = $1, author = $2, rating = $3, review = $4, read_date = $5, isbn = $6, cover_url = $7 WHERE id = $8",
+      [title, author, rating, review, read_date, isbn, coverUrl, id]
+    );
+    res.redirect("/");
+  } catch (err) {
+    console.error("Eroare la editarea cărții:", err);
+    res.status(500).send("Eroare la editarea cărții.");
   }
 });
 
