@@ -139,6 +139,20 @@ app.post("/edit/:id", async (req, res) => {
   }
 });
 
+app.get("/filter", async (req, res) => {
+  const minRating = req.query.minRating;
+
+  try {
+    const result = await db.query("SELECT * FROM books WHERE rating >= $1", [
+      minRating,
+    ]);
+    books = result.rows;
+    res.render("index.ejs", { books });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.listen(port, () => {
   console.log("Server Running on Port 3000");
 });
