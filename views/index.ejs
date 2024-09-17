@@ -7,6 +7,22 @@
     <title>Book Notes</title>
   </head>
   <body>
-    <h1>Welcome to Book Notes</h1>
+    <h1>Books I've Read</h1>
+
+    <div class="book-list">
+      <% books.forEach(book => { %>
+      <div class="book-item">
+        <img
+          src="<%= book.cover_url %>"
+          alt="Cover of <%= book.title %>"
+          width="150"
+        />
+        <h2><%= book.title %> by <%= book.author %></h2>
+        <p>Rating: <%= book.rating %>/10</p>
+        <p><%= book.review %></p>
+        <p>Date read: <%= book.read_date %></p>
+      </div>
+      <% }) %>
+    </div>
   </body>
 </html>
