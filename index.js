@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import axios from "axios";
 
 const app = express();
 const port = 3000;
@@ -27,6 +28,43 @@ app.get("/", async (req, res) => {
     res.render("index.ejs", { books: books });
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.get("/add", (req, res) => {
+  res.render("add.ejs");
+});
+
+app.post("/add", async (req, res) => {
+  const { title, author, rating, read_date, review } = req.body;
+
+  let isbn = null;
+  let coverUrl = "/images/placeholder.jpg"; // Placeholder-ul implicit
+
+  try {
+    // Căutare ISBN folosind Open Library API
+    const response = await axios.get(
+      `https://openlibrary.org/search.json?title=${title}&author=${author}`
+    );
+    if (response.data.docs && response.data.docs.length > 0) {
+      const bookData = response.data.docs[0];
+      isbn = bookData.isbn ? bookData.isbn[0] : null; // Obținem primul ISBN
+
+      // Dacă există ISBN, generăm URL-ul copertei
+      if (isbn) {
+        coverUrl = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`;
+      }
+    }
+
+    // Inserăm datele în baza de date
+    await db.query(
+      "INSERT INTO books (title, author, rating, review, read_date, isbn, cover_url) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      [title, author, rating, review, read_date, isbn, coverUrl]
+    );
+    res.redirect("/");
+  } catch (err) {
+    console.error("Eroare la adăugarea cărții:", err);
+    res.status(500).send("Eroare la adăugarea cărții.");
   }
 });
 
