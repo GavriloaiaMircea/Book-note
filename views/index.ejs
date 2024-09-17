@@ -4,21 +4,69 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/styles.css" />
-    <title>Book Notes</title>
+    <title>Books I've Read</title>
     <script>
+      // Funcție pentru a formata data în DD-MM-YYYY
       function formatDate(dateString) {
-        const options = { year: "numeric", month: "2-digit", day: "2-digit" };
         const date = new Date(dateString);
-        return date.toLocaleDateString(undefined, options);
+        const day = ("0" + date.getDate()).slice(-2);
+        const month = ("0" + (date.getMonth() + 1)).slice(-2);
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
       }
+
+      // Afișăm data în formatul dorit
+      document.addEventListener("DOMContentLoaded", () => {
+        const dateElements = document.querySelectorAll(".formatted-date");
+        dateElements.forEach((element) => {
+          element.textContent = formatDate(element.textContent);
+        });
+      });
     </script>
   </head>
   <body>
     <h1>Books I've Read</h1>
+
+    <!-- Butonul "New Book" -->
     <form class="add-new-book" action="/add" method="GET">
-      <button type="submit">New Book</button>
+      <button type="submit" class="btn-new-book">New Book</button>
     </form>
 
+    <!-- Container pentru sortare și filtrare -->
+    <div class="sort-filter-container">
+      <!-- Linkuri pentru sortare -->
+      <div class="sort-options">
+        <form action="/" method="GET">
+          <button type="submit" name="sortBy" value="rating" class="btn">
+            Sort by Rating
+          </button>
+          <button type="submit" name="sortBy" value="read_date" class="btn">
+            Sort by Date
+          </button>
+          <button type="submit" name="sortBy" value="title" class="btn">
+            Sort by Title
+          </button>
+          <button type="submit" name="sortBy" value="author" class="btn">
+            Sort by Author
+          </button>
+        </form>
+      </div>
+
+      <!-- Dropdown pentru filtrare după rating -->
+      <form action="/filter" method="GET" class="filter-form">
+        <label for="rating" class="dropdown-label">Filter by Rating:</label>
+        <select name="minRating" id="rating" class="dropdown">
+          <option value="5">5+</option>
+          <option value="6">6+</option>
+          <option value="7">7+</option>
+          <option value="8">8+</option>
+          <option value="9">9+</option>
+        </select>
+        <button type="submit" class="filter-button">Apply Filter</button>
+      </form>
+    </div>
+
+    <!-- Lista de cărți -->
     <div class="book-list">
       <% books.forEach(book => { %>
       <div class="book-item">
@@ -31,11 +79,10 @@
           <h2><%= book.title %></h2>
           <p><strong>Author:</strong> <%= book.author %></p>
           <p><strong>Rating:</strong> <%= book.rating %>/10</p>
+          <!-- Data citirii formatată -->
           <p>
             <strong>Date Read:</strong>
-            <script>
-              document.write(formatDate("<%= book.read_date %>"));
-            </script>
+            <span class="formatted-date"><%= book.read_date %></span>
           </p>
           <p><%= book.review %></p>
           <div class="book-actions">

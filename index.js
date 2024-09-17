@@ -22,12 +22,30 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
+  const { sortBy } = req.query;
+  let orderBy = "read_date";
+  let order = "DESC";
+
+  if (sortBy === "rating") {
+    orderBy = "rating";
+    order = "DESC";
+  } else if (sortBy === "author") {
+    orderBy = "author";
+    order = "ASC";
+  } else if (sortBy === "title") {
+    orderBy = "title";
+    order = "ASC";
+  }
+
   try {
-    const result = await db.query("SELECT * FROM books");
-    books = result.rows;
-    res.render("index.ejs", { books: books });
+    const result = await db.query(
+      `SELECT * FROM books ORDER BY ${orderBy} ${order}`
+    );
+    const books = result.rows;
+    res.render("index.ejs", { books });
   } catch (error) {
-    console.log(error);
+    console.error("Eroare la sortare:", error);
+    res.status(500).send("Eroare la sortare");
   }
 });
 
